@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { API_BASE_URL } from '../services/api.config';
 
 @Component({
   selector: 'app-admin-books',
@@ -13,7 +14,7 @@ export class AdminBooks {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  apiUrl = 'http://127.0.0.1:8000/api/books/';
+  apiUrl = `${API_BASE_URL}/books/`;
 
   books = signal<any[]>([]);
   editingId = signal<number | null>(null);
@@ -22,15 +23,20 @@ export class AdminBooks {
   author = signal('');
   category = signal('');
   imageUrl = signal('');
-  rating = signal<number | null>(null);
-  year = signal<number | null>(null);
-  pages = signal<number | null>(null);
+  rating = signal(0);
+  year = signal(new Date().getFullYear());
+  pages = signal(0);
   description = signal('');
 
   selectedImageFile = signal<File | null>(null);
   selectedPdfFile = signal<File | null>(null);
 
   ngOnInit() {
+    if (!localStorage.getItem('access')) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.loadBooks();
   }
 
@@ -62,9 +68,9 @@ export class AdminBooks {
     formData.append('author', this.author());
     formData.append('category', this.category());
     formData.append('image_url', this.imageUrl());
-    formData.append('rating', String(this.rating()));
-    formData.append('year', String(this.year()));
-    formData.append('pages', String(this.pages()));
+    formData.append('rating', String(this.rating() || 0));
+    formData.append('year', String(this.year() || new Date().getFullYear()));
+    formData.append('pages', String(this.pages() || 0));
     formData.append('description', this.description());
 
     if (this.selectedImageFile()) {
@@ -85,6 +91,7 @@ export class AdminBooks {
         },
         error: (error) => {
           console.log('Update failed:', error);
+          alert('Update failed. Make sure you are logged in as admin.');
         },
       });
     } else {
@@ -95,6 +102,7 @@ export class AdminBooks {
         },
         error: (error) => {
           console.log('Create failed:', error);
+          alert('Create failed. Make sure you are logged in as admin.');
         },
       });
     }
@@ -106,9 +114,9 @@ export class AdminBooks {
     this.author.set(book.author);
     this.category.set(book.category);
     this.imageUrl.set(book.image_url || '');
-    this.rating.set(book.rating);
-    this.year.set(book.year);
-    this.pages.set(book.pages);
+    this.rating.set(book.rating || 0);
+    this.year.set(book.year || new Date().getFullYear());
+    this.pages.set(book.pages || 0);
     this.description.set(book.description || '');
 
     this.selectedImageFile.set(null);
@@ -116,12 +124,17 @@ export class AdminBooks {
   }
 
   deleteBook(id: number) {
+    if (!confirm('Delete this book?')) {
+      return;
+    }
+
     this.http.delete(`${this.apiUrl}${id}/`, this.getHeaders()).subscribe({
       next: () => {
         this.loadBooks();
       },
       error: (error) => {
         console.log('Delete failed:', error);
+        alert('Delete failed. Make sure you are logged in as admin.');
       },
     });
   }
@@ -144,9 +157,9 @@ export class AdminBooks {
     this.author.set('');
     this.category.set('');
     this.imageUrl.set('');
-    this.rating.set(null);
-    this.year.set(null);
-    this.pages.set(null);
+    this.rating.set(0);
+    this.year.set(new Date().getFullYear());
+    this.pages.set(0);
     this.description.set('');
 
     this.selectedImageFile.set(null);
@@ -157,6 +170,7 @@ export class AdminBooks {
     localStorage.removeItem('access');
     localStorage.removeItem('refresh');
     localStorage.removeItem('user');
+    localStorage.removeItem('username');
 
     this.router.navigate(['/login']);
   }

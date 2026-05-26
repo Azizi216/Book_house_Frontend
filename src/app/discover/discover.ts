@@ -1,6 +1,7 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { API_BASE_URL } from '../services/api.config';
 import { Book, BookService } from '../services/book.service';
 
 @Component({
@@ -73,7 +74,8 @@ export class Discover implements OnInit {
         this.books.set(books);
         this.loading.set(false);
       },
-      error: () => {
+      error: (error) => {
+        console.log('BOOK LOAD ERROR:', error);
         this.errorMessage.set('Could not load books. Make sure the Django backend is running.');
         this.loading.set(false);
       },
@@ -81,7 +83,7 @@ export class Discover implements OnInit {
   }
 
   bookImage(book: Book): string {
-    return book.image_url || '/book_house.png';
+    return book.image_file || book.image_url || '/book_house.png';
   }
 
   toggleFavorite(title: string) {
@@ -107,18 +109,20 @@ export class Discover implements OnInit {
   closeBook() {
     this.selectedBook.set(null);
   }
+
   startReading(book: Book) {
-  if (!book.pdf_file) {
-    alert('PDF file is not available for this book.');
-    return;
+    if (!book.pdf_file) {
+      alert('PDF file is not available for this book.');
+      return;
+    }
+
+    const backendBaseUrl = API_BASE_URL.replace('/api', '');
+    const pdfUrl = book.pdf_file.startsWith('http')
+      ? book.pdf_file
+      : `${backendBaseUrl}${book.pdf_file}`;
+
+    window.open(pdfUrl, '_blank');
   }
-
-  const pdfUrl = book.pdf_file.startsWith('http')
-    ? book.pdf_file
-    : `http://127.0.0.1:8000${book.pdf_file}`;
-
-  window.open(pdfUrl, '_blank');
-}
 
   logout() {
     this.authService.logout();

@@ -9,6 +9,7 @@ export interface Book {
   author: string;
   category: string;
   image_url: string;
+  image_file?: string | null;
   pdf_file?: string | null;
   rating: number;
   year: number;
