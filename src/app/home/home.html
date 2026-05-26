@@ -1,0 +1,97 @@
+<section id="hero">
+    <nav class="navbar">
+        <h2 class="logo">Book House</h2>
+
+        <ul>
+            <li><a (click)="scrollTo('hero')">Home</a></li>
+            <li><a (click)="scrollTo('services')">Services</a></li>
+            <li><a (click)="scrollTo('about')">About</a></li>
+            <li><a (click)="scrollTo('contact')">Contact</a></li>
+            <li><a routerLink="/login">Login</a></li>
+            <li><a routerLink="/discover">Discover</a></li>
+            <li><a routerLink="/sign-up" class="nav-btn">Sign Up</a></li>
+        </ul>
+    </nav>
+
+    <div class="hero-content">
+        <div class="hero-text">
+            <span class="badge">Welcome to your book world</span>
+            <h1>Discover Books That Inspire You</h1>
+            <p>
+                Book House helps you explore books, find new stories, and build your personal reading journey.
+            </p>
+
+            <div class="buttons">
+                <a routerLink="/sign-up" class="primary-btn">Get Started</a>
+                <a routerLink="/login" class="secondary-btn">Login</a>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <img src="/Login_page.png" alt="Reading books">
+        </div>
+    </div>
+</section>
+
+<section id="services">
+    <h2>Our Services</h2>
+    <p class="section-text">Everything you need for a better reading experience.</p>
+
+    <div class="cards">
+        <div class="card">
+            <img src="/book_house.png" alt="Books">
+            <h3>Book Collection</h3>
+            <p>Explore different books from many categories.</p>
+        </div>
+
+        <div class="card">
+            <img src="/land2.jpg" alt="Reading">
+            <h3>Easy Search</h3>
+            <p>Find books by title, author, or category quickly.</p>
+        </div>
+
+        <div class="card">
+            <img src="/land3.jpg" alt="Favorites">
+            <h3>Save Favorites</h3>
+            <p>Create your own reading list and save books you love.</p>
+        </div>
+    </div>
+</section>
+
+<section id="about">
+    <div class="about-image">
+        <img src="/book_house.png" alt="About Book House">
+    </div>
+
+    <div class="about-text">
+        <h2>About Book House</h2>
+
+        <p>
+            Book House is a simple and beautiful website for book lovers. Our goal is to help readers discover useful, interesting, and inspiring books.
+        </p>
+
+        <p>
+            Whether you like novels, education, technology, history, or self-improvement, Book House gives you a clean place to start.
+        </p>
+
+        <p>
+            This website was created by Hashmatullah Azizi.
+        </p>
+    </div>
+</section>
+
+<section id="contact">
+    <h2>Contact Us</h2>
+    <p class="section-text">Have questions? Send us a message.</p>
+
+    <form class="contact-form">
+        <input type="text" placeholder="Your name">
+        <input type="email" placeholder="Your email">
+        <textarea placeholder="Your message"></textarea>
+        <button type="submit">Send Message</button>
+    </form>
+</section>
+
+<footer>
+    <p>© 2026 Book House. All rights reserved.</p>
+</footer>

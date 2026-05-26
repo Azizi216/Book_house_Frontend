@@ -1,0 +1,348 @@
+#discover {
+    min-height: 100vh;
+    padding-left: 70px;
+    padding-right: 70px;
+    background: linear-gradient(135deg, #fff3e0, #fffaf2);
+    color: #3b2a22;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+}
+
+.logo {
+    text-decoration: none;
+    color: #5a3c32;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.topbar nav {
+    display: flex;
+    gap: 22px;
+}
+
+.topbar nav a {
+    text-decoration: none;
+    color: #5a3c32;
+    font-weight: bold;
+}
+
+.topbar nav a.active,
+.topbar nav a:hover {
+    color: #be4a14;
+}
+
+.profile {
+    position: relative;
+}
+
+.profile-btn {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 25px;
+    background-color: white;
+    color: #5a3c32;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+}
+
+.profile-menu {
+    position: absolute;
+    right: 0;
+    top: 50px;
+    width: 210px;
+    background-color: white;
+    padding: 18px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.profile-menu button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background-color: #be4a14;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 52px;
+    margin-bottom: 10px;
+}
+
+.header p {
+    color: #6b5147;
+    font-size: 18px;
+}
+
+.search-box {
+    max-width: 550px;
+    margin: 25px auto 0;
+    display: flex;
+    background-color: white;
+    border: 1px solid #d6b89c;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 15px 18px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.clear-btn {
+    width: 45px;
+    border: none;
+    background-color: white;
+    color: #be4a14;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 20px;
+}
+
+.categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.categories button,
+.controls select {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 25px;
+    background-color: white;
+    color: #5a3c32;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 14px rgba(0, 0, 0, 0.08);
+}
+
+.categories button:hover,
+.categories button.active {
+    background-color: #be4a14;
+    color: white;
+}
+
+.result-count {
+    color: #6b5147;
+    margin-bottom: 25px;
+}
+
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 25px;
+}
+
+.book-card {
+    position: relative;
+    background-color: white;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    transition: 0.3s;
+}
+
+.book-card:hover {
+    transform: translateY(-6px);
+}
+
+.favorite {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background-color: white;
+    color: #be4a14;
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.favorite.saved {
+    background-color: #be4a14;
+    color: white;
+}
+
+.book-card img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    display: block;
+}
+
+.book-info {
+    padding: 22px;
+}
+
+.book-info span {
+    display: inline-block;
+    background-color: #fff3e0;
+    color: #be4a14;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.book-info h3 {
+    margin: 14px 0 6px;
+    color: #5a3c32;
+}
+
+.book-info p {
+    margin: 0 0 14px;
+    color: #6b5147;
+}
+
+.meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    color: #6b5147;
+    margin-bottom: 18px;
+}
+
+.book-info button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #be4a14;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    background-color: white;
+    padding: 40px;
+    border-radius: 20px;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 100;
+}
+
+.modal {
+    width: 100%;
+    max-width: 420px;
+    background-color: white;
+    border-radius: 22px;
+    padding: 24px;
+    position: relative;
+    color: #3b2a22;
+}
+
+#logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#logo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin: 0
+}
+
+.modal img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.close {
+    position: absolute;
+    right: 18px;
+    top: 18px;
+    border: none;
+    background-color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.read-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #be4a14;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+@media (max-width: 1000px) {
+    .book-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .controls {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 700px) {
+    #discover {
+        padding: 25px 20px 50px;
+    }
+    .topbar {
+        flex-direction: column;
+    }
+    .topbar nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .header h1 {
+        font-size: 36px;
+    }
+    .book-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.error-message {
+    color: #b00020;
+    background-color: #fff;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin: 0 0 20px;
+}

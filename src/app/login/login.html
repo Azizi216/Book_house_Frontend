@@ -1,0 +1,32 @@
+<section>
+    <div id="left">
+        <h1>
+            Welcome Back!
+        </h1>
+        <p id="welcome-message">
+            Get a cup of coffee and read your favorite books with us.
+        </p>
+    </div>
+    <div id="right">
+        <h2>Login</h2>
+        <form (ngSubmit)="onSubmit()">
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" [(ngModel)]="username" required>
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" [(ngModel)]="password" required>
+            </div>
+            @if (errorMessage) {
+            <p class="error-message">{{ errorMessage }}</p>
+            }
+            <button type="submit" [disabled]="loading">{{ loading ? 'Logging in...' : 'Login' }}</button>
+            <p class="switch-link">
+                No account yet?
+                <a routerLink="/sign-up">Sign Up</a>
+            </p>
+        </form>
+
+    </div>
+</section>

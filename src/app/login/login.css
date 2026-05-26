@@ -1,0 +1,166 @@
+section {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+#left,
+#right {
+    flex: 1;
+    min-height: 100vh;
+}
+
+#left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    background-image: url("/Login_page.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+    padding: 30px;
+}
+
+h1 {
+    color: #74664f;
+    font-size: 48px;
+    margin-top: 30px;
+    text-align: center;
+}
+
+#right {
+    background-color: #fff3e0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 30px;
+}
+
+#welcome-message {
+    font-size: 32px;
+    color: #000000;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+    min-height: 300px;
+    padding: 18px;
+    border-radius: 16px;
+    background-color: #fff3e0;
+    color: #5a3c32;
+    box-sizing: border-box;
+    transition: all 0.4s ease-in-out;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+form div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+form div input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #be4a14;
+    border-radius: 8px;
+    color: #5a3c32;
+}
+
+form button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background-color: rgb(190, 74, 20);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.5s ease, transform 0.2s ease;
+}
+
+form button:hover {
+    transform: scale(0.985);
+    background-color: rgb(236, 127, 76);
+}
+
+form button:active {
+    transform: scale(0.97);
+}
+
+
+/* Tablet and mobile */
+
+@media (max-width: 800px) {
+    section {
+        flex-direction: column;
+    }
+    #left {
+        display: none;
+    }
+    #right {
+        width: 100%;
+        min-height: 100vh;
+        padding: 20px;
+    }
+    h1 {
+        font-size: 36px;
+    }
+    #welcome-message {
+        font-size: 26px;
+    }
+    form {
+        max-width: 380px;
+    }
+}
+
+
+/* Small phones */
+
+@media (max-width: 480px) {
+    #right {
+        padding: 15px;
+    }
+    form {
+        max-width: 100%;
+        padding: 15px;
+    }
+    #welcome-message {
+        font-size: 22px;
+    }
+    form div input,
+    form button {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+.error-message {
+    margin: 0;
+    color: #b00020;
+    font-size: 14px;
+}
+
+.switch-link {
+    text-align: center;
+    margin: 0;
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

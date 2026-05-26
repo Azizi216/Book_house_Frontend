@@ -1,0 +1,63 @@
+<section class="admin-page">
+    <div class="admin-header">
+        <h2>Admin Book Manager</h2>
+
+        <button type="button" class="logout-btn" (click)="logout()">
+      Logout
+    </button>
+    </div>
+
+    <form (ngSubmit)="saveBook()" class="book-form">
+        <input placeholder="Title" [ngModel]="title()" (ngModelChange)="title.set($event)" name="title" required />
+
+        <input placeholder="Author" [ngModel]="author()" (ngModelChange)="author.set($event)" name="author" required />
+
+        <input placeholder="Category" [ngModel]="category()" (ngModelChange)="category.set($event)" name="category" required />
+
+        <input placeholder="Image URL" [ngModel]="imageUrl()" (ngModelChange)="imageUrl.set($event)" name="imageUrl" />
+
+        <label class="file-label">
+      Choose Image From Computer
+      <input type="file" accept="image/*" (change)="onImageSelected($event)" />
+    </label>
+
+        <label class="file-label">
+      Choose PDF File
+      <input type="file" accept="application/pdf" (change)="onPdfSelected($event)" />
+    </label>
+
+        <input type="number" placeholder="Rating" [ngModel]="rating()" (ngModelChange)="rating.set($event)" name="rating" />
+
+        <input type="number" placeholder="Year" [ngModel]="year()" (ngModelChange)="year.set($event)" name="year" />
+
+        <input type="number" placeholder="Pages" [ngModel]="pages()" (ngModelChange)="pages.set($event)" name="pages" />
+
+        <textarea placeholder="Description" [ngModel]="description()" (ngModelChange)="description.set($event)" name="description"></textarea>
+
+        <button type="submit">
+      {{ editingId() ? 'Update Book' : 'Create Book' }}
+    </button>
+    </form>
+
+    <div class="book-list">
+        @for (book of books(); track book.id) {
+        <div class="book-item">
+            <div>
+                <img class="book-preview" [src]="book.image_file || book.image_url || '/book_house.png'" [alt]="book.title" />
+
+                <h3>{{ book.title }}</h3>
+                <p>{{ book.author }} — {{ book.category }}</p>
+                <p>⭐ {{ book.rating }} | {{ book.year }} | {{ book.pages }} pages</p>
+
+                @if (book.pdf_file) {
+                <a [href]="book.pdf_file" target="_blank">Open PDF</a> }
+            </div>
+
+            <div class="actions">
+                <button type="button" (click)="editBook(book)">Edit</button>
+                <button type="button" (click)="deleteBook(book.id)">Delete</button>
+            </div>
+        </div>
+        }
+    </div>
+</section>

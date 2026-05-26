@@ -1,0 +1,113 @@
+<section id="discover">
+    <header class="topbar">
+        <div id="logo">
+            <a routerLink="/home"><img id="logo" src="/Logo.png" alt="Book House"></a>
+        </div>
+
+        <nav>
+            <a routerLink="/home">Home</a>
+            <a routerLink="/discover" class="active">Discover</a>
+        </nav>
+
+        <div class="profile">
+            <button class="profile-btn" (click)="profileOpen.set(!profileOpen())">
+        👤 {{ userName }}
+      </button> @if (profileOpen()) {
+            <div class="profile-menu">
+                <p>Signed in as<br><strong>{{ userName }}</strong></p>
+                <p>Favorites: {{ favorites().length }}</p>
+                <button (click)="logout()">Logout</button>
+            </div>
+            }
+        </div>
+    </header>
+
+    <div class="header">
+        <h1>Discover Books</h1>
+        <p>Search, explore, and find your next favorite book.</p>
+
+        <div class="search-box">
+            <input type="text" placeholder="Search by book title or author..." [value]="searchText()" (input)="searchText.set($any($event.target).value)" /> @if (searchText()) {
+            <button class="clear-btn" (click)="clearSearch()">✕</button> }
+        </div>
+    </div>
+
+    <div class="controls">
+        <div class="categories">
+            @for (category of categories(); track category) {
+            <button (click)="selectedCategory.set(category)" [class.active]="selectedCategory() === category">
+          {{ category }}
+        </button> }
+        </div>
+
+        <select [value]="sortBy()" (change)="sortBy.set($any($event.target).value)">
+      <option value="title">Sort by Title</option>
+      <option value="rating">Sort by Rating</option>
+      <option value="year">Sort by Newest</option>
+    </select>
+    </div>
+
+    @if (loading()) {
+    <p class="result-count">Loading books from backend...</p>
+    } @if (errorMessage()) {
+    <p class="error-message">{{ errorMessage() }}</p>
+    }
+
+    <p class="result-count">
+        Showing {{ filteredBooks().length }} books
+    </p>
+
+    <div class="book-grid">
+        @for (book of filteredBooks(); track book.id) {
+        <div class="book-card">
+            <button class="favorite" [class.saved]="isFavorite(book.title)" (click)="toggleFavorite(book.title)">
+          {{ isFavorite(book.title) ? '♥' : '♡' }}
+        </button>
+
+            <img [src]="bookImage(book)" [alt]="book.title">
+
+            <div class="book-info">
+                <span>{{ book.category }}</span>
+                <h3>{{ book.title }}</h3>
+                <p>{{ book.author }}</p>
+
+                <div class="meta">
+                    <small>⭐ {{ book.rating }}</small>
+                    <small>{{ book.year }}</small>
+                    <small>{{ book.pages }} pages</small>
+                </div>
+
+                <button (click)="openBook(book)">View Details</button>
+            </div>
+        </div>
+        } @empty {
+        <div class="empty">
+            <h3>No books found</h3>
+            <p>Try another search or category.</p>
+        </div>
+        }
+    </div>
+</section>
+
+@if (selectedBook(); as book) {
+<div class="modal-backdrop" (click)="closeBook()">
+    <div class="modal" (click)="$event.stopPropagation()">
+        <button class="close" (click)="closeBook()">✕</button>
+
+        <img [src]="bookImage(book)" [alt]="book.title">
+        <h2>{{ book.title }}</h2>
+        <p><strong>Author:</strong> {{ book.author }}</p>
+        <p><strong>Category:</strong> {{ book.category }}</p>
+        <p><strong>Rating:</strong> ⭐ {{ book.rating }}</p>
+        <p><strong>Year:</strong> {{ book.year }}</p>
+        <p><strong>Pages:</strong> {{ book.pages }}</p>
+        @if (book.description) {
+        <p><strong>Description:</strong> {{ book.description }}</p>
+        }
+
+        <button class="read-btn" (click)="startReading(book)">
+  Start Reading
+</button>
+    </div>
+</div>
+}
