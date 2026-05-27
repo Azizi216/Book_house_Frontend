@@ -1,7 +1,9 @@
 <section id="discover">
     <header class="topbar">
-        <div id="logo">
-            <a routerLink="/home"><img id="logo" src="/Logo.png" alt="Book House"></a>
+        <div class="logo">
+            <a routerLink="/home">
+                <img src="/Logo.png" alt="Book House" />
+            </a>
         </div>
 
         <nav>
@@ -51,11 +53,11 @@
     <p class="result-count">Loading books from backend...</p>
     } @if (errorMessage()) {
     <p class="error-message">{{ errorMessage() }}</p>
-    }
-
+    } @if (!loading()) {
     <p class="result-count">
         Showing {{ filteredBooks().length }} books
     </p>
+    }
 
     <div class="book-grid">
         @for (book of filteredBooks(); track book.id) {
@@ -64,7 +66,7 @@
           {{ isFavorite(book.title) ? '♥' : '♡' }}
         </button>
 
-            <img [src]="bookImage(book)" [alt]="book.title">
+            <img [src]="bookImage(book)" [alt]="book.title" />
 
             <div class="book-info">
                 <span>{{ book.category }}</span>
@@ -94,20 +96,25 @@
     <div class="modal" (click)="$event.stopPropagation()">
         <button class="close" (click)="closeBook()">✕</button>
 
-        <img [src]="bookImage(book)" [alt]="book.title">
+        <img [src]="bookImage(book)" [alt]="book.title" />
+
         <h2>{{ book.title }}</h2>
+
         <p><strong>Author:</strong> {{ book.author }}</p>
         <p><strong>Category:</strong> {{ book.category }}</p>
         <p><strong>Rating:</strong> ⭐ {{ book.rating }}</p>
         <p><strong>Year:</strong> {{ book.year }}</p>
         <p><strong>Pages:</strong> {{ book.pages }}</p>
+
         @if (book.description) {
         <p><strong>Description:</strong> {{ book.description }}</p>
-        }
-
+        } @if (book.pdf_url) {
         <button class="read-btn" (click)="startReading(book)">
-  Start Reading
-</button>
+          Start Reading
+        </button> } @else {
+        <button class="read-btn" disabled>
+          PDF Not Available
+        </button> }
     </div>
 </div>
 }

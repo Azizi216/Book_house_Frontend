@@ -1,7 +1,6 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { API_BASE_URL } from '../services/api.config';
 import { Book, BookService } from '../services/book.service';
 
 @Component({
@@ -36,24 +35,28 @@ export class Discover implements OnInit {
   });
 
   filteredBooks = computed(() => {
-    const search = this.searchText().toLowerCase();
+    const search = this.searchText().toLowerCase().trim();
     const category = this.selectedCategory();
 
-    let result = this.books().filter(book => {
+    let result = this.books().filter((book) => {
+      const title = book.title?.toLowerCase() || '';
+      const author = book.author?.toLowerCase() || '';
+      const bookCategory = book.category || '';
+
       const matchesSearch =
-        book.title.toLowerCase().includes(search) ||
-        book.author.toLowerCase().includes(search);
+        title.includes(search) ||
+        author.includes(search);
 
       const matchesCategory =
-        category === 'All' || book.category === category;
+        category === 'All' || bookCategory === category;
 
       return matchesSearch && matchesCategory;
     });
 
     if (this.sortBy() === 'rating') {
-      result = [...result].sort((a, b) => b.rating - a.rating);
+      result = [...result].sort((a, b) => Number(b.rating) - Number(a.rating));
     } else if (this.sortBy() === 'year') {
-      result = [...result].sort((a, b) => b.year - a.year);
+      result = [...result].sort((a, b) => Number(b.year) - Number(a.year));
     } else {
       result = [...result].sort((a, b) => a.title.localeCompare(b.title));
     }
@@ -83,48 +86,47 @@ export class Discover implements OnInit {
   }
 
   bookImage(book: Book): string {
-    return book.image_file || book.image_url || '/book_house.png';
+    if (book.image_url && book.image_url.trim() !== '') {
+      return book.image_url;
+    }
+
+    return '/book_house.png';
   }
 
-  toggleFavorite(title: string) {
-    this.favorites.update(items =>
+  toggleFavorite(title: string): void {
+    this.favorites.update((items) =>
       items.includes(title)
-        ? items.filter(item => item !== title)
+        ? items.filter((item) => item !== title)
         : [...items, title]
     );
   }
 
-  isFavorite(title: string) {
+  isFavorite(title: string): boolean {
     return this.favorites().includes(title);
   }
 
-  clearSearch() {
+  clearSearch(): void {
     this.searchText.set('');
   }
 
-  openBook(book: Book) {
+  openBook(book: Book): void {
     this.selectedBook.set(book);
   }
 
-  closeBook() {
+  closeBook(): void {
     this.selectedBook.set(null);
   }
 
-  startReading(book: Book) {
-    if (!book.pdf_file) {
-      alert('PDF file is not available for this book.');
+  startReading(book: Book): void {
+    if (!book.pdf_url || book.pdf_url.trim() === '') {
+      alert('PDF is not available for this book.');
       return;
     }
 
-    const backendBaseUrl = API_BASE_URL.replace('/api', '');
-    const pdfUrl = book.pdf_file.startsWith('http')
-      ? book.pdf_file
-      : `${backendBaseUrl}${book.pdf_file}`;
-
-    window.open(pdfUrl, '_blank');
+    window.open(book.pdf_url, '_blank');
   }
 
-  logout() {
+  logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
