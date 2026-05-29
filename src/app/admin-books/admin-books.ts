@@ -67,6 +67,19 @@ export class AdminBooks {
       return;
     }
 
+    const imageFile = this.selectedImageFile();
+    const pdfFile = this.selectedPdfFile();
+
+    if (imageFile && imageFile.size === 0) {
+      alert('Selected image file is empty. Please choose another image.');
+      return;
+    }
+
+    if (pdfFile && pdfFile.size === 0) {
+      alert('Selected PDF file is empty. Please choose another PDF.');
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append('title', this.title().trim());
@@ -78,15 +91,12 @@ export class AdminBooks {
     formData.append('pages', String(Number(this.pages()) || 0));
     formData.append('description', this.description().trim());
 
-    const imageFile = this.selectedImageFile();
-    const pdfFile = this.selectedPdfFile();
-
     if (imageFile) {
-      formData.append('image_file', imageFile);
+      formData.append('image_file', imageFile, imageFile.name);
     }
 
     if (pdfFile) {
-      formData.append('pdf_file', pdfFile);
+      formData.append('pdf_file', pdfFile, pdfFile.name);
     }
 
     const id = this.editingId();
@@ -152,9 +162,22 @@ export class AdminBooks {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] || null;
 
-    if (file && !file.type.startsWith('image/')) {
+    if (!file) {
+      this.selectedImageFile.set(null);
+      return;
+    }
+
+    if (file.size === 0) {
+      alert('Selected image file is empty.');
+      input.value = '';
+      this.selectedImageFile.set(null);
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
       alert('Please choose a valid image file.');
       input.value = '';
+      this.selectedImageFile.set(null);
       return;
     }
 
@@ -165,9 +188,22 @@ export class AdminBooks {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] || null;
 
-    if (file && file.type !== 'application/pdf') {
+    if (!file) {
+      this.selectedPdfFile.set(null);
+      return;
+    }
+
+    if (file.size === 0) {
+      alert('Selected PDF file is empty.');
+      input.value = '';
+      this.selectedPdfFile.set(null);
+      return;
+    }
+
+    if (file.type !== 'application/pdf') {
       alert('Please choose a valid PDF file.');
       input.value = '';
+      this.selectedPdfFile.set(null);
       return;
     }
 
