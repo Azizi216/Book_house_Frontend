@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { API_BASE_URL } from '../services/api.config';
@@ -41,7 +41,7 @@ export class AdminBooks {
   }
 
   getHeaders() {
-    const token = localStorage.getItem('access');
+    const token = localStorage.getItem('access') || '';
 
     return {
       headers: new HttpHeaders({
@@ -62,23 +62,31 @@ export class AdminBooks {
   }
 
   saveBook() {
-    const formData = new FormData();
-
-    formData.append('title', this.title());
-    formData.append('author', this.author());
-    formData.append('category', this.category());
-    formData.append('image_url', this.imageUrl());
-    formData.append('rating', String(this.rating() || 0));
-    formData.append('year', String(this.year() || new Date().getFullYear()));
-    formData.append('pages', String(this.pages() || 0));
-    formData.append('description', this.description());
-
-    if (this.selectedImageFile()) {
-      formData.append('image_file', this.selectedImageFile()!);
+    if (!this.title().trim() || !this.author().trim() || !this.category().trim()) {
+      alert('Title, author, and category are required.');
+      return;
     }
 
-    if (this.selectedPdfFile()) {
-      formData.append('pdf_file', this.selectedPdfFile()!);
+    const formData = new FormData();
+
+    formData.append('title', this.title().trim());
+    formData.append('author', this.author().trim());
+    formData.append('category', this.category().trim());
+    formData.append('image_url', this.imageUrl().trim());
+    formData.append('rating', String(Number(this.rating()) || 0));
+    formData.append('year', String(Number(this.year()) || new Date().getFullYear()));
+    formData.append('pages', String(Number(this.pages()) || 0));
+    formData.append('description', this.description().trim());
+
+    const imageFile = this.selectedImageFile();
+    const pdfFile = this.selectedPdfFile();
+
+    if (imageFile) {
+      formData.append('image_file', imageFile);
+    }
+
+    if (pdfFile) {
+      formData.append('pdf_file', pdfFile);
     }
 
     const id = this.editingId();
@@ -86,23 +94,23 @@ export class AdminBooks {
     if (id) {
       this.http.patch(`${this.apiUrl}${id}/`, formData, this.getHeaders()).subscribe({
         next: () => {
+          alert('Book updated successfully.');
           this.resetForm();
           this.loadBooks();
         },
-        error: (error) => {
-          console.log('Update failed:', error);
-          alert('Update failed. Make sure you are logged in as admin.');
+        error: (error: HttpErrorResponse) => {
+          this.handleRequestError(error, 'Update failed');
         },
       });
     } else {
       this.http.post(this.apiUrl, formData, this.getHeaders()).subscribe({
         next: () => {
+          alert('Book created successfully.');
           this.resetForm();
           this.loadBooks();
         },
-        error: (error) => {
-          console.log('Create failed:', error);
-          alert('Create failed. Make sure you are logged in as admin.');
+        error: (error: HttpErrorResponse) => {
+          this.handleRequestError(error, 'Create failed');
         },
       });
     }
@@ -110,17 +118,19 @@ export class AdminBooks {
 
   editBook(book: any) {
     this.editingId.set(book.id);
-    this.title.set(book.title);
-    this.author.set(book.author);
-    this.category.set(book.category);
+    this.title.set(book.title || '');
+    this.author.set(book.author || '');
+    this.category.set(book.category || '');
     this.imageUrl.set(book.image_url || '');
-    this.rating.set(book.rating || 0);
-    this.year.set(book.year || new Date().getFullYear());
-    this.pages.set(book.pages || 0);
+    this.rating.set(Number(book.rating) || 0);
+    this.year.set(Number(book.year) || new Date().getFullYear());
+    this.pages.set(Number(book.pages) || 0);
     this.description.set(book.description || '');
 
     this.selectedImageFile.set(null);
     this.selectedPdfFile.set(null);
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   deleteBook(id: number) {
@@ -132,9 +142,8 @@ export class AdminBooks {
       next: () => {
         this.loadBooks();
       },
-      error: (error) => {
-        console.log('Delete failed:', error);
-        alert('Delete failed. Make sure you are logged in as admin.');
+      error: (error: HttpErrorResponse) => {
+        this.handleRequestError(error, 'Delete failed');
       },
     });
   }
@@ -142,12 +151,26 @@ export class AdminBooks {
   onImageSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] || null;
+
+    if (file && !file.type.startsWith('image/')) {
+      alert('Please choose a valid image file.');
+      input.value = '';
+      return;
+    }
+
     this.selectedImageFile.set(file);
   }
 
   onPdfSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] || null;
+
+    if (file && file.type !== 'application/pdf') {
+      alert('Please choose a valid PDF file.');
+      input.value = '';
+      return;
+    }
+
     this.selectedPdfFile.set(file);
   }
 
@@ -164,6 +187,34 @@ export class AdminBooks {
 
     this.selectedImageFile.set(null);
     this.selectedPdfFile.set(null);
+  }
+
+  private handleRequestError(error: HttpErrorResponse, fallbackMessage: string) {
+    console.log(`${fallbackMessage}:`, error);
+    console.log('Backend error body:', error.error);
+
+    if (error.status === 401) {
+      alert(`${fallbackMessage}. Your login expired. Please login again.`);
+      this.logout();
+      return;
+    }
+
+    if (error.status === 403) {
+      alert(`${fallbackMessage}. Your account is not admin/staff.`);
+      return;
+    }
+
+    if (error.status === 400 && error.error) {
+      alert(`${fallbackMessage}: ${JSON.stringify(error.error)}`);
+      return;
+    }
+
+    if (error.status === 500) {
+      alert(`${fallbackMessage}. Backend server error. Check Render logs.`);
+      return;
+    }
+
+    alert(`${fallbackMessage}. Status: ${error.status}`);
   }
 
   logout() {
